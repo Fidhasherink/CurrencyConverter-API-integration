@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <script>
+        async function convertCurrency() {
+            const amount = document.getElementById("amount").value;
+            const fromCurrency = document.getElementById("fromCurrency").value;
+            const toCurrency = document.getElementById("toCurrency").value;
+
+            const requestBody = {
+                amount: parseFloat(amount),
+                from: fromCurrency,
+                to: toCurrency
+            };
+
+            try {
+                const response = await fetch("http://localhost:8080/api/convert", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if (!response.ok) throw new Error("Conversion failed");
+
+                const data = await response.json();
+                document.getElementById("result").innerText = `Converted Amount: ${data.convertedAmount}`;
+            } catch (error) {
+                document.getElementById("result").innerText = "Error: Unable to fetch data";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Currency Converter</h2>
+
+    <!-- Links to Test APIs -->
+    <p>
+        🔗 <a href="http://localhost:8080/api/rates?base=USD" target="_blank">Test Backend (Check Rates)</a>
+    </p>
+    <p>  use postman to convert.
+        🔗 <a href="http://localhost:8080/api/convert" target="_blank"></a>
+    </p>
+
+    <hr>
+
+    <!-- Conversion Form -->
+    <label>Amount: <input type="number" id="amount" value="1"></label>
+    <label>From: <input type="text" id="fromCurrency" value="USD"></label>
+    <label>To: <input type="text" id="toCurrency" value="INR"></label>
+    <button onclick="convertCurrency()">Convert</button>
+    
+    <p id="result"></p>
+</body>
+</html>
